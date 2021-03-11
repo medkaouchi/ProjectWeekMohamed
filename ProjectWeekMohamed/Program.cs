@@ -147,6 +147,7 @@ namespace ProjectWeekMohamed
                                 while (logged)
                                 {
                                     Console.Clear();
+                                    Console.WriteLine(GetKredit(user)); 
                                     Console.WriteLine("1 : Blackjack.\n2 : Slot machine.\n3 : Memory.\n4 : Uit te loggen.");
 
                                     switch (Console.ReadLine())
@@ -320,9 +321,10 @@ namespace ProjectWeekMohamed
                                             Console.Clear();
                                             Console.WriteLine($"Je bent al {(DateTime.Now - dt).Duration().ToString().Substring(0, 8)} uur.");
                                             Console.WriteLine("***Slot machine***");
-                                            Console.WriteLine("Je inzet is : 5 $");
+                                            Console.WriteLine("Je inzet zal 5 $ zijn");
                                             Console.WriteLine("Druk op Enter om te starten");
                                             Console.ReadLine();
+                                            SetKredit(GetKredit(user) - 5, user);
                                             for (int k = 0; k < 20; k++)
                                             {
                                                 Console.Clear();
@@ -522,8 +524,8 @@ namespace ProjectWeekMohamed
             string encryptie = "";
             foreach (char c in input)
             {
-                if (Convert.ToInt32(c) > 33 && Convert.ToInt32(c) < 127)
-                    encryptie += Convert.ToChar(159 - Convert.ToInt32(c));
+                if (Convert.ToInt32(c) > 31 && Convert.ToInt32(c) < 127)
+                    encryptie += Convert.ToChar(158 - Convert.ToInt32(c));
                 else
                     encryptie += c;
             }
@@ -534,8 +536,8 @@ namespace ProjectWeekMohamed
             string orig = "";
             foreach (char c in input)
             {
-                if (Convert.ToInt32(c) > 33 && Convert.ToInt32(c) < 127)
-                    orig += Convert.ToChar(159 - Convert.ToInt32(c));
+                if (Convert.ToInt32(c) > 31 && Convert.ToInt32(c) < 127)
+                    orig += Convert.ToChar(158 - Convert.ToInt32(c));
                 else
                     orig += c;
             }
@@ -687,12 +689,16 @@ namespace ProjectWeekMohamed
                 while (!reader.EndOfStream)
                 {
                     string line = reader.ReadLine();
-                    if (Decript(line).Substring(0,Decript(line).IndexOf(' ')) != user)
+                    if (line!="")
+                    {
+                        if (Decript(line).Substring(0,Decript(line).IndexOf(' ')) != user)
                         old += line + "\n";
                     else
                     {
-                        old += Encript(user + " " + UsernameExist(user))+"!"+kredit + "\n";
+                        old += Encript(user + " " + UsernameExist(user))+Encript("!"+ kredit.ToString()) + "\n";
                     }
+                    }
+                    
                 }
             }
             using (StreamWriter write = new StreamWriter(bestandsnaam))
@@ -708,7 +714,7 @@ namespace ProjectWeekMohamed
                     string orig = Decript(reader.ReadLine());
                     if (orig != "" && orig.Substring(0, orig.IndexOf(' ')) == user)
                     {
-                        kredit = Convert.ToInt32(orig.Substring(orig.IndexOf('!') + 1, orig.Length- orig.IndexOf('!')));
+                        kredit = Convert.ToInt32(orig.Substring(orig.IndexOf('!') + 1, orig.Length- orig.IndexOf('!')-1));
                     }
                 }
             }
